@@ -1,35 +1,77 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" href="/favicon.png" />
-		<meta name="viewport" content="width=device-width" />
-		
-		<link rel="modulepreload" href="/_app/immutable/entry/start.14649318.js">
-		<link rel="modulepreload" href="/_app/immutable/chunks/scheduler.e108d1fd.js">
-		<link rel="modulepreload" href="/_app/immutable/chunks/singletons.3273fa31.js">
-		<link rel="modulepreload" href="/_app/immutable/entry/app.c6e09d12.js">
-		<link rel="modulepreload" href="/_app/immutable/chunks/index.0719bd3d.js">
-	</head>
-	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents">
-			<script>
-				{
-					__sveltekit_e63r04 = {
-						base: "",
-						env: {}
-					};
 
-					const element = document.currentScript.parentElement;
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/pico.min.css">
+  <title>FeedIt</title>
+</head>
 
-					Promise.all([
-						import("/_app/immutable/entry/start.14649318.js"),
-						import("/_app/immutable/entry/app.c6e09d12.js")
-					]).then(([kit, app]) => {
-						kit.start(app, element);
-					});
-				}
-			</script>
-		</div>
-	</body>
+<script>
+function addUser() {
+  var newName = document.getElementById("newUser");
+  if (newName.value.length == 0) return;
+  var ul = document.getElementById("users");
+  var li = document.createElement('li');
+  li.appendChild(document.createTextNode(newName.value));
+  ul.appendChild(li);
+  newName.value = "";
+}
+</script>
+
+<body>
+<main class="container">
+
+<details open>
+  <summary>🐈 Pets</summary>
+  <article>
+    <header>
+    Calico Cat 🐱
+    </header>
+  </article>
+  <article>
+    <header>
+    Goldfish 🐟
+    </header>
+  </article>
+</details>
+
+<details>
+  <summary>👪 Users</summary>
+  <ul id="users">
+    <li>Mama</li>
+    <li>Papa</li>
+  </ul>
+</details>
+
+<details open>
+  <summary>➕ Add Pets</summary>
+  <form class="pure-form">
+    <fieldset>
+        <legend>Add another pet to the registry</legend>
+        <input type="Name" placeholder="Name" />
+        <legend>Feeding frequency per day</legend>
+        <label class="pure-radio"><input type="Radio" value="Name" />1</label>
+        <label class="pure-radio"><input type="Radio" value="Name" />2</label>
+        <label class="pure-radio"><input type="Radio" value="Name" />3</label>
+        <label class="pure-radio"><input type="Radio" value="Name" />4</label>
+        <button class="pure-button">Save</button>
+    </fieldset>
+  </form>
+</details>
+
+<details>
+  <summary>➕ Add Users</summary>
+        <legend>Add another user to the registry</legend>
+        <input type="Name" placeholder="Name" id="newUser" />
+        <button class="pure-button" onclick="addUser()">Save</button>
+</details>
+
+</main>
+
+<script>
+</script>
+
+</body>
 </html>
