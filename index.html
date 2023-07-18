@@ -22,13 +22,21 @@ function addUser() {
   newName.value = "";
 }
 
-function notify(delayDuration) {
+function notifyDelay(delayDuration, message) {
   console.log(Notification.permission);
   if (Notification.permission != 'granted') {
-    console.log('requested');
+    // console.log('requested'); 
     Notification.requestPermission().then((result) => {console.log(result);});
   }
-  setTimeout(function () { alert('VIDEO HAS STOPPED');}, delayDuration * 1000);
+
+  setTimeout(function () { notify(message);}, delayDuration * 1000);
+}
+
+function notify(message) {
+  var title = "FeedIt notification";
+  icon = './favicon.png';
+  var body = message;
+  var notification = new Notification(title, { body, icon });
 }
 
 </script>
@@ -81,8 +89,8 @@ function notify(delayDuration) {
   <summary>⚠️ Test</summary>
   <legend>Experimental functions</legend>
   <button class="pure-button" onclick="alert('!!!')">Alert</button>
-  <button class="pure-button" onclick="notify(0)">Notify</button>
-  <button class="pure-button" onclick="notify(5)">Delay 5s + Notify</button>
+  <button class="pure-button" onclick="notifyDelay(0, 'test 0')">Notify</button>
+  <button class="pure-button" onclick="notifyDelay(5, 'test 5')">Delay 5s + Notify</button>
 
 </details>
 
