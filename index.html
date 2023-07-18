@@ -46,16 +46,18 @@ function notify(message) {
 
 <details>
   <summary>🐈 Pets</summary>
-  <article>
-    <header>
-    Calico Cat 🐱
-    </header>
-  </article>
-  <article>
-    <header>
-    Goldfish 🐟
-    </header>
-  </article>
+  <section id="pets">
+    <article>
+      <header>
+      Calico Cat 🐱
+      </header>
+    </article>
+    <article>
+      <header>
+      Goldfish 🐟
+      </header>
+    </article>  
+  </section>
 </details>
 
 <details>
@@ -89,8 +91,8 @@ function notify(message) {
   <summary>⚠️ Test</summary>
   <legend>Experimental functions</legend>
   <button class="pure-button" onclick="alert('!!!')">Alert</button>
-  <button class="pure-button" onclick="notifyDelay(0, 'test 0')">Notify</button>
-  <button class="pure-button" onclick="notifyDelay(5, 'test 5')">Delay 5s + Notify</button>
+  <button class="pure-button" onclick="notifyDelay(0, 'Feed Calico Cat 🐱')">Notify</button>
+  <button class="pure-button" onclick="notifyDelay(5, 'Feed Goldfish 🐟')">Delay 5s + Notify</button>
 
 </details>
 
