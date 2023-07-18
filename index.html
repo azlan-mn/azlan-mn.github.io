@@ -9,6 +9,9 @@
 </head>
 
 <script>
+
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
 function addUser() {
   var newName = document.getElementById("newUser");
   if (newName.value.length == 0) return;
@@ -18,12 +21,22 @@ function addUser() {
   ul.appendChild(li);
   newName.value = "";
 }
+
+function notify(delayDuration) {
+  console.log(Notification.permission);
+  if (Notification.permission != 'granted') {
+    console.log('requested');
+    Notification.requestPermission().then((result) => {console.log(result);});
+  }
+  setTimeout(function () { alert('VIDEO HAS STOPPED');}, delayDuration * 1000);
+}
+
 </script>
 
 <body>
 <main class="container">
 
-<details open>
+<details>
   <summary>🐈 Pets</summary>
   <article>
     <header>
@@ -45,27 +58,32 @@ function addUser() {
   </ul>
 </details>
 
-<details open>
+<details>
   <summary>➕ Add Pets</summary>
-  <form class="pure-form">
-    <fieldset>
-        <legend>Add another pet to the registry</legend>
-        <input type="Name" placeholder="Name" />
-        <legend>Feeding frequency per day</legend>
-        <label class="pure-radio"><input type="Radio" value="Name" />1</label>
-        <label class="pure-radio"><input type="Radio" value="Name" />2</label>
-        <label class="pure-radio"><input type="Radio" value="Name" />3</label>
-        <label class="pure-radio"><input type="Radio" value="Name" />4</label>
-        <button class="pure-button">Save</button>
-    </fieldset>
-  </form>
+  <legend>Add another pet to the registry</legend>
+  <input type="Name" placeholder="Name" />
+  <legend>Feeding frequency per day</legend>
+  <label class="pure-radio"><input type="Radio" value="Name" />1</label>
+  <label class="pure-radio"><input type="Radio" value="Name" />2</label>
+  <label class="pure-radio"><input type="Radio" value="Name" />3</label>
+  <label class="pure-radio"><input type="Radio" value="Name" />4</label>
+  <button class="pure-button">Save</button>
 </details>
 
 <details>
   <summary>➕ Add Users</summary>
-        <legend>Add another user to the registry</legend>
-        <input type="Name" placeholder="Name" id="newUser" />
-        <button class="pure-button" onclick="addUser()">Save</button>
+  <legend>Add another user to the registry</legend>
+  <input type="Name" placeholder="Name" id="newUser" />
+  <button class="pure-button" onclick="addUser()">Save</button>
+</details>
+
+<details>
+  <summary>⚠️ Test</summary>
+  <legend>Experimental functions</legend>
+  <button class="pure-button" onclick="alert('!!!')">Alert</button>
+  <button class="pure-button" onclick="notify(0)">Notify</button>
+  <button class="pure-button" onclick="notify(5)">Delay 5s + Notify</button>
+
 </details>
 
 </main>
