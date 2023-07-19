@@ -13,7 +13,9 @@ async function postData(url = "", data = {}) {
 
 function loadData() {
   var url = document.getElementById("datasrc").value;
-  postData(url, { action: 'get', }).then((data) => {
+  url += "?timestamp=" + Date.now()
+  postData(url, { "action": "get", }).then((data) => {
+    console.log(data, url)
     var users = document.getElementById("users");
     var pets = document.getElementById("pets");
     users.innerHTML = "";
@@ -31,45 +33,60 @@ function loadData() {
   });
 }
 
-function addUser() {
+function addUserOld() {
   var newName = document.getElementById("newUser");
   if (newName.value.length == 0) return;
   var ul = document.getElementById("users");
-  var li = document.createElement('li');
+  var li = document.createElement("li");
   li.appendChild(document.createTextNode(newName.value));
   ul.appendChild(li);
   newName.value = "";
 }
 
+function addUser() {
+  var userNameElement = document.getElementById("newUser");
+  if (userNameElement.value.length == 0) return;
+  people = {};
+  people[userNameElement.value] = {};
+  userNameElement.value = "";
+  var url = document.getElementById("datasrc").value;
+  postData(url, { "action": "set", "data": { "people": people } }).then((data) => {
+    loadData();
+  });
+}
+
 function addPet() {
   var freq = "1";
   var petName = document.getElementById("newPet");
-  var ele = document.getElementsByName('frequency');
+  if (petName.value.length == 0) return;
+  var ele = document.getElementsByName("frequency");
   for (i = 0; i < ele.length; i++) {
     if (ele[i].checked) {
       freq = ele[i].value;
       break;
     }
   }
+  payload = {};
+  payload[petName.value] = { "frequency": freq };
+  petName.value = "";
   var url = document.getElementById("datasrc").value;
-  postData(url, { action: 'set', "pets": { "name": petName.value, "frequency": freq } }).then((data) => {
+  postData(url, { "action": "set", "data": {"pets": payload} }).then((data) => {
     loadData();
-    petName.value = "";
   });
 }
 
 function addUserToList(user) {
   var ul = document.getElementById("users");
-  var li = document.createElement('li');
+  var li = document.createElement("li");
   li.appendChild(document.createTextNode(user));
   ul.appendChild(li);
 }
 
 function addPetToList(pet) {
   var petList = document.getElementById("pets");
-  var section = document.createElement('section');
-  var article = document.createElement('article');
-  var header = document.createElement('header');
+  var section = document.createElement("section");
+  var article = document.createElement("article");
+  var header = document.createElement("header");
   header.appendChild(document.createTextNode(pet.name));
   article.appendChild(header);
   section.appendChild(article);
@@ -77,7 +94,7 @@ function addPetToList(pet) {
 }
 
 function notifyDelay(delayDuration, message) {
-  if (Notification.permission != 'granted') {
+  if (Notification.permission != "granted") {
     Notification.requestPermission().then((result) => {console.log(result);});
   }
   setTimeout(function () { notify(message);}, delayDuration * 1000);
@@ -85,7 +102,7 @@ function notifyDelay(delayDuration, message) {
 
 function notify(message) {
   var title = "FeedIt notification";
-  var icon = './favicon.png';
+  var icon = "./favicon.png";
   var body = message;
   var notification = new Notification(title, { body, icon });
 }
