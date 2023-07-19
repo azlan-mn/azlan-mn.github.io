@@ -9,88 +9,6 @@
   <title>FeedIt</title>
 </head>
 
-<script>
-
-const delay = ms => new Promise(res => setTimeout(res, ms));
-
-async function postData(url = "", data = {}) {
-  const response = await fetch(url, {
-    method: "POST",
-    cache: "no-cache",
-    headers: { "Content-Type": "application/json" },
-    referrerPolicy: "no-referrer",
-    body: JSON.stringify(data),
-  });
-  return response.json();
-}
-
-function addUser() {
-  var newName = document.getElementById("newUser");
-  if (newName.value.length == 0) return;
-  var ul = document.getElementById("users");
-  var li = document.createElement('li');
-  li.appendChild(document.createTextNode(newName.value));
-  ul.appendChild(li);
-  newName.value = "";
-}
-
-function addUserToList(user) {
-  var ul = document.getElementById("users");
-  var li = document.createElement('li');
-  li.appendChild(document.createTextNode(user));
-  ul.appendChild(li);
-}
-
-function addPetToList(pet) {
-  var petList = document.getElementById("pets");
-  var section = document.createElement('section');
-  var article = document.createElement('article');
-  var header = document.createElement('header');
-  header.appendChild(document.createTextNode(pet));
-  article.appendChild(header);
-  section.appendChild(article);
-  petList.appendChild(section);
-}
-
-function notifyDelay(delayDuration, message) {
-  console.log(Notification.permission);
-  if (Notification.permission != 'granted') {
-    // console.log('requested'); 
-    Notification.requestPermission().then((result) => {console.log(result);});
-  }
-
-  setTimeout(function () { notify(message);}, delayDuration * 1000);
-}
-
-function notify(message) {
-  var title = "FeedIt notification";
-  var icon = './favicon.png';
-  var body = message;
-  var notification = new Notification(title, { body, icon });
-}
-
-function loadData() {
-  var url = document.getElementById("datasrc").value;
-  postData(url, { action: 'get', }).then((data) => {
-    console.log(data, typeof(data));
-    var users = document.getElementById("users");
-    var pets = document.getElementById("pets");
-    users.innerHTML = "";
-    pets.innerHTML = "";
-
-    for (var user in data["people"]) {
-      addUserToList(user)
-    }
-
-    for (var pet in data["pets"]) {
-      addPetToList(pet)
-    }
-
-  });
-}
-
-</script>
-
 <body>
 <main class="container">
 
@@ -102,11 +20,6 @@ function loadData() {
       Calico Cat 🐱
       </header>
     </article>
-    <article>
-      <header>
-      Goldfish 🐟
-      </header>
-    </article>  
   </section>
 </details>
 
@@ -114,32 +27,37 @@ function loadData() {
   <summary>👪 Users</summary>
   <ul id="users">
     <li>Mama</li>
-    <li>Papa</li>
   </ul>
 </details>
 
 <details>
   <summary>➕ Add Pets</summary>
-  <legend>Add another pet to the registry</legend>
-  <input type="Name" placeholder="Name" />
-  <legend>Feeding frequency per day</legend>
-  <label class="pure-radio"><input type="Radio" value="Name" />1</label>
-  <label class="pure-radio"><input type="Radio" value="Name" />2</label>
-  <label class="pure-radio"><input type="Radio" value="Name" />3</label>
-  <label class="pure-radio"><input type="Radio" value="Name" />4</label>
-  <button class="pure-button">Save</button>
+  <fieldset>
+    <legend>Add another pet to the registry</legend>
+    <input type="Name" placeholder="Name" id="newPet" />
+  </fieldset>
+  <fieldset>
+    <legend>Feeding frequency per day</legend>
+    <label class="pure-radio"><input type="Radio" name="frequency" value="1" />1</label>
+    <label class="pure-radio"><input type="Radio" name="frequency" value="2" />2</label>
+    <label class="pure-radio"><input type="Radio" name="frequency" value="3" />3</label>
+    <label class="pure-radio"><input type="Radio" name="frequency" value="4" />4</label>
+  </fieldset>
+  <button class="pure-button" onclick="addPet()">Save</button>
 </details>
 
 <details>
   <summary>➕ Add Users</summary>
-  <legend>Add another user to the registry</legend>
-  <input type="Name" placeholder="Name" id="newUser" />
+  <fieldset>
+    <legend>Add another user to the registry</legend>
+    <input type="Name" placeholder="Name" id="newUser" />
+  </fieldset>
   <button class="pure-button" onclick="addUser()">Save</button>
 </details>
 
 <details>
   <summary>⚠️ Test</summary>
-  <legend>Experimental functions</legend>
+  <legend>Experimental</legend>
   <button class="pure-button" onclick="loadData()">OnLoad()</button>
   <button class="pure-button" onclick="alert('!!!')">Alert</button>
   <button class="pure-button" onclick="notifyDelay(0, 'Feed Calico Cat 🐱')">Notify</button>
@@ -150,9 +68,7 @@ function loadData() {
 </main>
 
 <script src="index.js"></script>
-<script>
-  loadData();
-</script>
+<script src="feedit.js"></script>
 
 </body>
 </html>
