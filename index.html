@@ -13,6 +13,25 @@
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
+async function postData(url = "", data = {}) {
+  // Default options are marked with *
+  const response = await fetch(url, {
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    mode: "cors", // no-cors, *cors, same-origin
+    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: "same-origin", // include, *same-origin, omit
+    headers: {
+      "Content-Type": "application/json",
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    redirect: "follow", // manual, *follow, error
+    referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    body: JSON.stringify(data), // body data type must match "Content-Type" header
+  });
+  console.log(response);
+  return response.json();
+}
+
 function addUser() {
   var newName = document.getElementById("newUser");
   if (newName.value.length == 0) return;
@@ -38,6 +57,18 @@ function notify(message) {
   icon = './favicon.png';
   var body = message;
   var notification = new Notification(title, { body, icon });
+}
+
+function get_data() {
+  var url = document.getElementById("datasrc").value;
+  console.log(url);
+  var users = document.getElementById("users");
+  var pets = document.getElementById("pets");
+  users.innerHTML = "";
+  pets.innerHTML = "";
+  postData(url, { action: 'get', }).then((data) => {
+    console.log(data);
+  });
 }
 
 </script>
@@ -94,12 +125,15 @@ function notify(message) {
   <button class="pure-button" onclick="alert('!!!')">Alert</button>
   <button class="pure-button" onclick="notifyDelay(0, 'Feed Calico Cat 🐱')">Notify</button>
   <button class="pure-button" onclick="notifyDelay(5, 'Feed Goldfish 🐟')">Delay 5s + Notify</button>
-  <input type="text" id="datasrc" />
+  <input type="text" id="datasrc" value="" />
 </details>
 
 </main>
 
 <script src="index.js"></script>
+<script>
+  get_data();
+</script>
 
 </body>
 </html>
