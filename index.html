@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="utf-8">
+  <link rel="manifest" href="manifest.json">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/pico.min.css">
   <title>FeedIt</title>
@@ -93,13 +94,12 @@ function notify(message) {
   <button class="pure-button" onclick="alert('!!!')">Alert</button>
   <button class="pure-button" onclick="notifyDelay(0, 'Feed Calico Cat 🐱')">Notify</button>
   <button class="pure-button" onclick="notifyDelay(5, 'Feed Goldfish 🐟')">Delay 5s + Notify</button>
-
+  <input type="text" id="datasrc" />
 </details>
 
 </main>
 
-<script>
-</script>
+<script src="index.js"></script>
 
 </body>
 </html>
