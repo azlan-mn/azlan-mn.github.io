@@ -87,8 +87,33 @@ function addPetToList(pet) {
   var section = document.createElement("section");
   var article = document.createElement("article");
   var header = document.createElement("header");
+  var p1 = document.createElement("p");
+  var p2 = document.createElement("p");
+  var p3 = document.createElement("p");
+  var button = document.createElement("button");
+  button.classList.add('pure-button');
+  button.appendChild(document.createTextNode("Feed"));
+  button.addEventListener('click', () => { alert(pet.name); });
   header.appendChild(document.createTextNode(pet.name));
+  pDate = new Date(pet.last_fed).toString();
+  p1.appendChild(document.createTextNode("Last fed on: " + pDate));
+  p2.appendChild(document.createTextNode("Last fed by: " + pet.last_fed_by));
+  // p3.appendChild(document.createTextNode("Next feeding: " + (8 + 24/pet.frequency).toString()));
+  var nextFeed = new Date();
+  var freq = Math.floor(24 / pet.frequency);
+  while (nextFeed.getHours() > freq) {
+    freq += Math.floor(24 / pet.frequency)
+  }
+  nextFeed.setHours(freq);
+  nextFeed.setMinutes(0);
+  nextFeed.setSeconds(0);
+  pDate = nextFeed.toDateString();
+  p3.appendChild(document.createTextNode("Next feeding: " + pDate));
   article.appendChild(header);
+  article.appendChild(p1);
+  article.appendChild(p2);
+  article.appendChild(p3);
+  article.appendChild(button);
   section.appendChild(article);
   petList.appendChild(section);
 }
@@ -107,4 +132,7 @@ function notify(message) {
   var notification = new Notification(title, { body, icon });
 }
 
+function heartbeat() {
+
+}
 loadData();
