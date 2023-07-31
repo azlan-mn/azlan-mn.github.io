@@ -33,6 +33,25 @@ function loadData() {
   });
 }
 
+function padTo2Digits(num) {
+  return num.toString().padStart(2, '0');
+}
+
+function formatDate(date) {
+  return (
+    [
+      padTo2Digits(date.getDate()),
+      padTo2Digits(date.getMonth() + 1),
+      date.getFullYear(),
+    ].join('-') +
+    ' ' +
+    [
+      padTo2Digits(date.getHours()),
+      padTo2Digits(date.getMinutes()),
+    ].join(':')
+  );
+}
+
 function addUserOld() {
   var newName = document.getElementById("newUser");
   if (newName.value.length == 0) return;
@@ -78,11 +97,18 @@ function addPet() {
 function addUserToList(user) {
   var ul = document.getElementById("users");
   var li = document.createElement("li");
+  var anchor = document.createElement("a")
+  anchor.appendChild(document.createTextNode(" ❌ "))
+  anchor.onclick = function () {
+    deleteData({"people": { [user] : null}})
+  };
   li.appendChild(document.createTextNode(user));
+  li.appendChild(anchor);
   ul.appendChild(li);
 }
 
 function addPetToList(pet) {
+  console.log(pet.name, pet.last_fed, pet.last_fed_by)
   var petList = document.getElementById("pets");
   var section = document.createElement("section");
   var article = document.createElement("article");
@@ -91,24 +117,43 @@ function addPetToList(pet) {
   var p2 = document.createElement("p");
   var p3 = document.createElement("p");
   var button = document.createElement("button");
+  var anchor = document.createElement("a")
+  anchor.appendChild(document.createTextNode(" ❌ "))
+  anchor.onclick = function () {
+    deleteData({"pets": { [pet.name]: null }})
+  };
+
   button.classList.add('pure-button');
   button.appendChild(document.createTextNode("Feed"));
   button.addEventListener('click', () => { alert(pet.name); });
   header.appendChild(document.createTextNode(pet.name));
-  pDate = new Date(pet.last_fed).toString();
+  header.appendChild(anchor);
+  if (pet.last_fed_by == undefined || pet.last_fed == undefined) {
+    pDate = "None";
+    pet.last_fed_by = "None";
+  }
+  else {
+    pDate = new Date(0);
+    pDate.setUTCSeconds(pet.last_fed);
+    pDate = formatDate(pDate);
+  }
   p1.appendChild(document.createTextNode("Last fed on: " + pDate));
   p2.appendChild(document.createTextNode("Last fed by: " + pet.last_fed_by));
-  // p3.appendChild(document.createTextNode("Next feeding: " + (8 + 24/pet.frequency).toString()));
+
+  var now = new Date();
   var nextFeed = new Date();
-  var freq = Math.floor(24 / pet.frequency);
-  while (nextFeed.getHours() > freq) {
-    freq += Math.floor(24 / pet.frequency)
-  }
   nextFeed.setHours(freq);
   nextFeed.setMinutes(0);
   nextFeed.setSeconds(0);
+
+  var freq = Math.floor(24 / pet.frequency);
+  console.log(freq)
+  while (nextFeed.getHours() > freq) {
+    freq += Math.floor(24 / pet.frequency)
+  }
   pDate = nextFeed.toDateString();
   p3.appendChild(document.createTextNode("Next feeding: " + pDate));
+
   article.appendChild(header);
   article.appendChild(p1);
   article.appendChild(p2);
@@ -116,6 +161,14 @@ function addPetToList(pet) {
   article.appendChild(button);
   section.appendChild(article);
   petList.appendChild(section);
+}
+
+function deleteData(data) {
+  console.log(data);
+  var url = document.getElementById("datasrc").value;
+  postData(url, { "action": "del", "data": data }).then((data) => {
+    loadData();
+  });
 }
 
 function notifyDelay(delayDuration, message) {
@@ -132,7 +185,6 @@ function notify(message) {
   var notification = new Notification(title, { body, icon });
 }
 
-function heartbeat() {
+function heartbeat() {}
 
-}
 loadData();
