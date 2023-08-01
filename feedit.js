@@ -37,6 +37,12 @@ function padTo2Digits(num) {
   return num.toString().padStart(2, '0');
 }
 
+function epoch2Date(num) {
+  pDate = new Date(0);
+  pDate.setUTCSeconds(num);
+  return pDate;
+}
+
 function formatDate(date) {
   return (
     [
@@ -107,8 +113,31 @@ function addUserToList(user) {
   ul.appendChild(li);
 }
 
+// Just add 6 to previous fed time
+function calcNextFeed(period, previous) {
+  // var nextFeed = new Date();
+  // var hour = nextFeed.getHours();
+  // console.log("Next 1: " + nextFeed);
+  // console.log("Hour 1: " + hour);
+  // nextFeed.setTime(nextFeed.getTime() + (start*60*60*1000));
+  // nextFeed.setMinutes(0);
+  // nextFeed.setSeconds(0);
+  // console.log("Next 2: " + nextFeed);
+
+  // var start = 8;
+  // while (hour > start) {
+  //   start += period;
+  // }
+  // console.log("Next 3: " + nextFeed);
+
+  // return Math.floor(nextFeed.getTime() / 1000);
+  previous.setTime(previous.getTime() + period*60*60*1000);
+  return previous;
+}
+
 function addPetToList(pet) {
-  console.log(pet.name, pet.last_fed, pet.last_fed_by)
+  console.log(pet.name, pet.last_fed, pet.last_fed_by, pet.frequency);
+  currentUser = document.getElementById("currentUser").value;
   var petList = document.getElementById("pets");
   var section = document.createElement("section");
   var article = document.createElement("article");
@@ -117,42 +146,32 @@ function addPetToList(pet) {
   var p2 = document.createElement("p");
   var p3 = document.createElement("p");
   var button = document.createElement("button");
-  var anchor = document.createElement("a")
-  anchor.appendChild(document.createTextNode(" ❌ "))
+  var anchor = document.createElement("a");
+
+  anchor.appendChild(document.createTextNode(" ❌ "));
   anchor.onclick = function () {
-    deleteData({"pets": { [pet.name]: null }})
+    deleteData({"pets": { [pet.name]: null }});
   };
 
   button.classList.add('pure-button');
   button.appendChild(document.createTextNode("Feed"));
-  button.addEventListener('click', () => { alert(pet.name); });
+  button.addEventListener('click', () => { feedIt(pet.name, currentUser, pet.frequency); });
+
   header.appendChild(document.createTextNode(pet.name));
   header.appendChild(anchor);
+
+  lastFed = "None";
   if (pet.last_fed_by == undefined || pet.last_fed == undefined) {
-    pDate = "None";
     pet.last_fed_by = "None";
   }
   else {
-    pDate = new Date(0);
-    pDate.setUTCSeconds(pet.last_fed);
-    pDate = formatDate(pDate);
+    lastFed = formatDate(epoch2Date(pet.last_fed));
   }
-  p1.appendChild(document.createTextNode("Last fed on: " + pDate));
+  var nextFeed = calcNextFeed(Math.floor(24 / pet.frequency), epoch2Date(pet.last_fed));
+
+  p1.appendChild(document.createTextNode("Last fed on: " + lastFed));
   p2.appendChild(document.createTextNode("Last fed by: " + pet.last_fed_by));
-
-  var now = new Date();
-  var nextFeed = new Date();
-  nextFeed.setHours(freq);
-  nextFeed.setMinutes(0);
-  nextFeed.setSeconds(0);
-
-  var freq = Math.floor(24 / pet.frequency);
-  console.log(freq)
-  while (nextFeed.getHours() > freq) {
-    freq += Math.floor(24 / pet.frequency)
-  }
-  pDate = nextFeed.toDateString();
-  p3.appendChild(document.createTextNode("Next feeding: " + pDate));
+  p3.appendChild(document.createTextNode("Next feeding: " + formatDate(nextFeed)));
 
   article.appendChild(header);
   article.appendChild(p1);
@@ -167,6 +186,14 @@ function deleteData(data) {
   console.log(data);
   var url = document.getElementById("datasrc").value;
   postData(url, { "action": "del", "data": data }).then((data) => {
+    loadData();
+  });
+}
+
+function feedIt(pet, currentUser, frequency) {
+  var now = parseInt(Date.now() / 1000);
+  var url = document.getElementById("datasrc").value;
+  postData(url, { "action": "set", "data": { "pets": { [pet]: { "last_fed": now, "last_fed_by": currentUser, "frequency": frequency } } } }).then((data) => {
     loadData();
   });
 }
