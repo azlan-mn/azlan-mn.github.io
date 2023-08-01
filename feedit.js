@@ -152,11 +152,6 @@ function addPetToList(pet) {
   anchor.onclick = function () {
     deleteData({"pets": { [pet.name]: null }});
   };
-
-  button.classList.add('pure-button');
-  button.appendChild(document.createTextNode("Feed"));
-  button.addEventListener('click', () => { feedIt(pet.name, currentUser, pet.frequency); });
-
   header.appendChild(document.createTextNode(pet.name));
   header.appendChild(anchor);
 
@@ -172,6 +167,13 @@ function addPetToList(pet) {
   p1.appendChild(document.createTextNode("Last fed on: " + lastFed));
   p2.appendChild(document.createTextNode("Last fed by: " + pet.last_fed_by));
   p3.appendChild(document.createTextNode("Next feeding: " + formatDate(nextFeed)));
+
+  button.appendChild(document.createTextNode("Feed"));
+  button.addEventListener('click', () => { feedIt(pet.name, currentUser, pet.frequency); });
+  if (nextFeed.getTime() < Date.now()) {
+    button.appendChild(document.createTextNode(" (Pending)"));
+    button.classList.add('warning');
+  }
 
   article.appendChild(header);
   article.appendChild(p1);
